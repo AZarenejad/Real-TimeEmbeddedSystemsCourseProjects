@@ -4,17 +4,17 @@
 #define TOGGLE_DIRECTION_PIN 11
 
 int pwm = 255;
-int lastPwm = 255;
-int onOffVal = 0;
-int incVal = 0;
-int decVal = 0;
-int togVal = 0;
+int last_pwm = 255;
+int on_off_val = 0;
+int inc_val = 0;
+int dec_val = 0;
+int tog_val = 0;
 
-bool isOnSwtchRead = false;
-bool isIncSwtchRead = false;
-bool isDecSwtchRead = false;
-bool isTogSwtchRead = false;
-bool motorDir = false;
+bool is_on_swtch_read = false;
+bool is_inc_swtch_read = false;
+bool is_dec_swtch_read = false;
+bool is_tog_swtch_read = false;
+bool motor_dir = false;
 
 void setup() {
   pinMode(ON_OFF_PIN, INPUT);
@@ -28,60 +28,60 @@ void setup() {
 
 void loop() {
   //buttons
-  onOffSwtchProgram();
-  incSwtchProgram();
-  decSwtchProgram();
-  togSwtchProgram();
+  on_off_swtch_program();
+  inc_swtch_program();
+  dec_swtch_program();
+  tog_swtch_program();
  
   //actuate motor
-  analogWrite(3, (motorDir)?pwm:0);
-  analogWrite(5, (motorDir)?0:pwm);
+  analogWrite(3, (motor_dir)?pwm:0);
+  analogWrite(5, (motor_dir)?0:pwm);
 }
 
-void onOffSwtchProgram() {
-  onOffVal = digitalRead(ON_OFF_PIN);
-  if (onOffVal == HIGH) {
-    lastPwm = (!isOnSwtchRead)? lastPwm :(pwm != 0)? pwm : lastPwm;
-    pwm = (isOnSwtchRead)? pwm :(pwm == 0) ? lastPwm : 0;
-    isOnSwtchRead = true;
+void tog_swtch_program() {
+  tog_val = digitalRead(TOGGLE_DIRECTION_PIN);
+  if (tog_val == HIGH) {
+    motor_dir = (is_tog_swtch_read)? motor_dir : !motor_dir;
+    is_tog_swtch_read = true;
   }
   else {
-    isOnSwtchRead = false;
+    is_tog_swtch_read = false;
   }
 }
 
-void incSwtchProgram() {
-  incVal = digitalRead(INCREASE_SPEED_PIN);
-  if (incVal == HIGH) {
-    lastPwm = (isIncSwtchRead)? lastPwm :(lastPwm + 10 > 255)? 255 : lastPwm + 10;
-    pwm = (isIncSwtchRead || pwm == 0)? pwm :(pwm + 10 > 255)? 255 : pwm + 10;
-    isIncSwtchRead = true;
+void on_off_swtch_program() {
+  on_off_val = digitalRead(ON_OFF_PIN);
+  if (on_off_val == HIGH) {
+    last_pwm = (!is_on_swtch_read)? last_pwm :(pwm != 0)? pwm : last_pwm;
+    pwm = (is_on_swtch_read)? pwm :(pwm == 0) ? last_pwm : 0;
+    is_on_swtch_read = true;
   }
   else {
-    isIncSwtchRead = false;
+    is_on_swtch_read = false;
   }
 }
 
-void decSwtchProgram() {
-  decVal = digitalRead(DECREASE_SPEED_PIN);
-  if (decVal == HIGH) {
-    lastPwm = (isDecSwtchRead)? lastPwm :(lastPwm - 10 < 0)? 0 : lastPwm - 10;
-    pwm = (isDecSwtchRead || pwm == 0)? pwm :(pwm - 10 < 0)? 0 : pwm - 10;
-    isDecSwtchRead = true;
+
+
+void dec_swtch_program() {
+  dec_val = digitalRead(DECREASE_SPEED_PIN);
+  if (dec_val == HIGH) {
+    last_pwm = (is_dec_swtch_read)? last_pwm :(last_pwm - 10 < 0)? 0 : last_pwm - 10;
+    pwm = (is_dec_swtch_read || pwm == 0)? pwm :(pwm - 10 < 0)? 0 : pwm - 10;
+    is_dec_swtch_read = true;
   }
   else {
-    isDecSwtchRead = false;
+    is_dec_swtch_read = false;
   }
 }
-
-void togSwtchProgram() {
-  togVal = digitalRead(TOGGLE_DIRECTION_PIN);
-  if (togVal == HIGH) {
-    motorDir = (isTogSwtchRead)? motorDir : !motorDir;
-    isTogSwtchRead = true;
+void inc_swtch_program() {
+  inc_val = digitalRead(INCREASE_SPEED_PIN);
+  if (inc_val == HIGH) {
+    last_pwm = (is_inc_swtch_read)? last_pwm :(last_pwm + 10 > 255)? 255 : last_pwm + 10;
+    pwm = (is_inc_swtch_read || pwm == 0)? pwm :(pwm + 10 > 255)? 255 : pwm + 10;
+    is_inc_swtch_read = true;
   }
   else {
-    isTogSwtchRead = false;
+    is_inc_swtch_read = false;
   }
 }
-

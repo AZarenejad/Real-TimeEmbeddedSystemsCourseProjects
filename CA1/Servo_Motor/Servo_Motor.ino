@@ -6,10 +6,10 @@
 Servo servo;
 
 double pos = 90;
-int decVal = 0;
-int incVal = 0;
-bool isIncSwtchRead = false;
-bool isDecSwtchRead = false;
+int dec_val = 0;
+int inc_val = 0;
+bool is_inc_swtch_read = false;
+bool is_dec_swtch_read = false;
 
 void setup() {
   servo.attach(6);
@@ -19,31 +19,31 @@ void setup() {
 }
 
 void loop() {
-  incSwtchProgram();
-  decSwtchProgram();
+  inc_swtch_program();
+  dec_swtch_program();
 }
 
-void incSwtchProgram() {
-  incVal = digitalRead(CW_PIN);
-  if (incVal == HIGH && !isIncSwtchRead) {
+void dec_swtch_program() {
+  dec_val = digitalRead(CCW_PIN);
+  if (dec_val == HIGH && !is_dec_swtch_read) {
+    pos -= 1.125;
+    servo.write(pos);
+    is_dec_swtch_read = true;
+  }
+  else {
+    is_dec_swtch_read = dec_val == HIGH;
+  }
+}
+
+void inc_swtch_program() {
+  inc_val = digitalRead(CW_PIN);
+  if (inc_val == HIGH && !is_inc_swtch_read) {
     Serial.println("INC");
     pos += 1.125;
     servo.write(pos);
-    isIncSwtchRead = true;
+    is_inc_swtch_read = true;
   }
   else {
-    isIncSwtchRead = incVal == HIGH;
-  }
-}
-
-void decSwtchProgram() {
-  decVal = digitalRead(CCW_PIN);
-  if (decVal == HIGH && !isDecSwtchRead) {
-    pos -= 1.125;
-    servo.write(pos);
-    isDecSwtchRead = true;
-  }
-  else {
-    isDecSwtchRead = decVal == HIGH;
+    is_inc_swtch_read = inc_val == HIGH;
   }
 }

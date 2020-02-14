@@ -2,17 +2,17 @@
 #define CCW_PIN 12
 #define OFF_PIN 11
 int n = 8;
-bool rotateCW = true;
-bool isOff = false;
+bool rotate_cw = true;
+bool is_off = false;
 
-bool isCwRead = false;
-int cwVal = 0;
+bool is_cw_read = false;
+int cw_val = 0;
 
-bool isCcwRead = false;
-int ccwVal = 0;
+bool is_ccw_read = false;
+int ccw_val = 0;
 
-bool isOffRead = false;
-int offVal = 0;
+bool is_off_read = false;
+int off_val = 0;
 
 void setup() {
   pinMode(4, OUTPUT);
@@ -27,53 +27,51 @@ void setup() {
 
 void loop() {
   //buttons
-  cwSwtchProgram();
-  ccwSwtchProgram();
-  offSwtchProgram();
+  cw_swtch_program();
+  ccw_swtch_program();
+  off_swtch_program();
 
   //actuate motor
-  if (rotateCW && !isOff) n = n >> 1;
-  else if (!isOff) n = n << 1;
+  if (rotate_cw && !is_off) n = n >> 1;
+  else if (!is_off) n = n << 1;
   if(n == 0) n = 8;
   if(n >= 16) n = 1;
-  if (!isOff) motorCommand(n);
+  if (!is_off) motor_command(n);
   delay(300);
 }
 
-void cwSwtchProgram() {
-  cwVal = digitalRead(CW_PIN);
-  if (cwVal == HIGH) {
-    rotateCW = (isCwRead)? rotateCW : true;
-    isOff = (isCwRead)? isOff : false;
-    isCwRead = true;
+void cw_swtch_program() {
+  cw_val = digitalRead(CW_PIN);
+  if (cw_val == HIGH) {
+    rotate_cw = (is_cw_read)? rotate_cw : true;
+    is_off = (is_cw_read)? is_off : false;
+    is_cw_read = true;
   }
-  else isCwRead = false;
+  else is_cw_read = false;
 }
 
-void ccwSwtchProgram() {
-  ccwVal = digitalRead(CCW_PIN);
-  if (ccwVal == HIGH) {
-    rotateCW = (isCcwRead)? rotateCW : false;
-    isOff = (isCcwRead)? isOff : false;
-    isCcwRead = true;
+void ccw_swtch_program() {
+  ccw_val = digitalRead(CCW_PIN);
+  if (ccw_val == HIGH) {
+    rotate_cw = (is_ccw_read)? rotate_cw : false;
+    is_off = (is_ccw_read)? is_off : false;
+    is_ccw_read = true;
   }
-  else isCcwRead = false;
+  else is_ccw_read = false;
 }
 
-void offSwtchProgram() {
-  offVal = digitalRead(OFF_PIN);
-  if (offVal == HIGH) {
-    isOff = (isOffRead)? isOff : true;
-    isOffRead = true;
+void off_swtch_program() {
+  off_val = digitalRead(OFF_PIN);
+  if (off_val == HIGH) {
+    is_off = (is_off_read)? is_off : true;
+    is_off_read = true;
   }
-  else isOffRead = false;
+  else is_off_read = false;
 }
 
-void motorCommand(int command) {
+void motor_command(int command) {
   digitalWrite(4, command%2);
   digitalWrite(5, (command>>1)%2);
   digitalWrite(6, (command>>2)%2);
   digitalWrite(7, (command>>3)%2);
 }
-
-
